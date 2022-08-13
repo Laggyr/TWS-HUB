@@ -1,3 +1,125 @@
-rfqweqdqw
-dawdawda
-wadawdwawdqwad
+-- init
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
+local venyx = library.new("Totally working Script", 5013109572)
+
+-- themes
+local themes = {
+Background = Color3.fromRGB(24, 24, 24),
+Glow = Color3.fromRGB(0, 0, 0),
+Accent = Color3.fromRGB(10, 10, 10),
+LightContrast = Color3.fromRGB(20, 20, 20),
+DarkContrast = Color3.fromRGB(14, 14, 14),  
+TextColor = Color3.fromRGB(255, 255, 255)
+}
+
+-- first page
+local page = venyx:addPage("Features", 5012544693)
+local section1 = page:addSection("Main")
+local section2 = page:addSection("Settings")
+local farmConnection 
+local lasTick = tick()
+section1:addToggle("AutoFarm", nil, function(value)
+    print("Toggled", value)
+    if value == true then
+        farmConnection = game["Run Service"].RenderStepped:Connect(function()
+            local currentTick = tick()
+            if currentTick-lasTick>1 then 
+                lasTick = tick()
+                local char = game.Players.LocalPlayer.Character
+                if char then 
+                    local hrp = char:WaitForChild("HumanoidRootPart")
+                    hrp.CFrame = CFrame.new(1105, 65.9357, 115.14)
+                end
+            end
+        end)
+    else 
+        farmConnection = nil
+    end
+end)
+section1:addToggle("ShowPath", nil, function(value)
+    print("Toggled", value)
+    if value == true then
+        venyx:Notify("Finding Tiles..", "Plaese Wait 5 sec")
+        for _, row in pairs(workspace["Glass Bridge"]["GlassPane"]:GetChildren()) do
+            if row:IsA("Folder") then
+                for _, glass in pairs(row:GetChildren()) do
+                    local p = Instance.new("Part")
+                    p.Anchored = true
+                    p.CanCollide = true
+                    p.Size = glass.Size + Vector3.new(.5,.8,.5)
+                    p.Position = glass.Position
+                    p.Name = "Hello"
+                    p.Parent = workspace
+                    
+                    glass.ChildAdded:Connect(function()
+                        p.Color = Color3.fromRGB(255,0,0)
+                    end)
+                    
+                    if not glass:FindFirstChild("TouchInterest") then
+                        p.Color = Color3.fromRGB(0,255,0)
+                    else
+                        p.Color = Color3.fromRGB(255,0,0)
+                    end
+                end
+            end
+        end
+    else 
+        for _, Object in pairs(workspace:GetChildren()) do
+            if Object.Name == "Hello" then
+                Object:Destroy()
+            end
+        end
+    end 
+end)
+section1:addButton("To start", function()
+    print("Clicked")
+    local char = game.Players.LocalPlayer.Character
+    if char then 
+        local hrp = char:WaitForChild("HumanoidRootPart")
+        hrp.CFrame = CFrame.new(17.3938, 65.9357, 115.14)
+    end
+    end)
+section1:addButton("To end", function()
+    print("Clicked")
+    local char = game.Players.LocalPlayer.Character
+    if char then 
+        local hrp = char:WaitForChild("HumanoidRootPart")
+        hrp.CFrame = CFrame.new(1096.52, 61, 115.341)
+    end
+    end)
+section1:addSlider("Walk Speed", 16, 0, 200, function(value)
+    print("Dragged", value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end)
+section1:addSlider("Jump Height", 50, 0, 200, function(value)
+    print("Dragged", value)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+    end)
+section2:addButton("Rejoin", function()
+    print("Clicked")
+    local ts = game:GetService("TeleportService")
+    local p = game:GetService("Players").LocalPlayer
+    ts:Teleport(game.PlaceId, p)
+    end)
+section2:addButton("Infinity Yield", function()
+    print("Clicked")
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end)
+section2:addKeybind("Toggle Keybind", Enum.KeyCode.RightControl, function()
+print("Activated Keybind")
+venyx:toggle()
+end, function()
+print("Changed Keybind")
+end)
+-- second page
+local theme = venyx:addPage("Theme", 5012544693)
+local colors = theme:addSection("Colors")
+
+for theme, color in pairs(themes) do -- all in one theme changer, i know, im cool
+colors:addColorPicker(theme, color, function(color3)
+venyx:setTheme(theme, color3)
+end)
+end
+
+-- load
+venyx:SelectPage(venyx.pages[1], true)
