@@ -33,6 +33,7 @@ section1:addToggle("AutoFarm", nil, function(value)
             end
         end)
     else 
+        farmConnection:Disconnect()
         farmConnection = nil
     end
 end)
