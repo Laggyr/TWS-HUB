@@ -1,132 +1,299 @@
 -- init
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
-local venyx = library.new("Totally working Cheat", 5013109572)
+local venyx = library.new("Impossible Glass Bridge Cheat", 5013109572)
+
+writefile("song.txt","lyrics..")
 
 -- themes
 local themes = {
-Background = Color3.fromRGB(24, 24, 24),
-Glow = Color3.fromRGB(0, 0, 0),
-Accent = Color3.fromRGB(10, 10, 10),
-LightContrast = Color3.fromRGB(20, 20, 20),
-DarkContrast = Color3.fromRGB(14, 14, 14),  
-TextColor = Color3.fromRGB(255, 255, 255)
+	Background = Color3.fromRGB(24, 24, 24),
+	Glow = Color3.fromRGB(0, 0, 0),
+	Accent = Color3.fromRGB(10, 10, 10),
+	LightContrast = Color3.fromRGB(20, 20, 20),
+	DarkContrast = Color3.fromRGB(14, 14, 14),  
+	TextColor = Color3.fromRGB(255, 255, 255)
 }
 
 -- first page
 local page = venyx:addPage("Features", 5012544693)
 local section1 = page:addSection("Main")
 local section2 = page:addSection("Settings")
+
 local farmConnection 
 local lasTick = tick()
 section1:addToggle("AutoFarm", nil, function(value)
-    print("Toggled", value)
-    if value == true then
-        farmConnection = game["Run Service"].RenderStepped:Connect(function()
-            local currentTick = tick()
-            if currentTick-lasTick>1 then 
-                lasTick = tick()
-                local char = game.Players.LocalPlayer.Character
-                if char then 
-                    local hrp = char:WaitForChild("HumanoidRootPart")
-                    hrp.CFrame = CFrame.new(1105, 65.9357, 115.14)
-                end
-            end
-        end)
-    else 
-        farmConnection:Disconnect()
-        farmConnection = nil
-    end
+	print("Toggled", value)
+	if value == true then
+		farmConnection = game["Run Service"].RenderStepped:Connect(function()
+			local currentTick = tick()
+			if currentTick-lasTick>1 then 
+				lasTick = tick()
+				local char = game.Players.LocalPlayer.Character
+				if char then 
+					local hrp = char:WaitForChild("HumanoidRootPart")
+					hrp.CFrame = CFrame.new(1105, 65.9357, 115.14)
+				end
+			end
+		end)
+	else 
+		farmConnection:Disconnect()
+		farmConnection = nil
+	end
 end)
 section1:addToggle("ShowPath", nil, function(value)
-    print("Toggled", value)
-    if value == true then
-        venyx:Notify("Finding Tiles..", "Plaese Wait 5 sec")
-        for _, row in pairs(workspace["Glass Bridge"]["GlassPane"]:GetChildren()) do
-            if row:IsA("Folder") then
-                for _, glass in pairs(row:GetChildren()) do
-                    local p = Instance.new("Part")
-                    p.Anchored = true
-                    p.CanCollide = true
-                    p.Size = glass.Size + Vector3.new(.5,.8,.5)
-                    p.Position = glass.Position
-                    p.Name = "Hello"
-                    p.Parent = workspace
-                    
-                    glass.ChildAdded:Connect(function()
-                        p.Color = Color3.fromRGB(255,0,0)
-                    end)
-                    
-                    if not glass:FindFirstChild("TouchInterest") then
-                        p.Color = Color3.fromRGB(0,255,0)
-                    else
-                        p.Color = Color3.fromRGB(255,0,0)
-                    end
-                end
-            end
-        end
-    else 
-        for _, Object in pairs(workspace:GetChildren()) do
-            if Object.Name == "Hello" then
-                Object:Destroy()
-            end
-        end
-    end 
+	print("Toggled", value)
+	if value == true then
+		venyx:Notify("Finding Tiles..", "Plaese Wait 5 sec")
+		for _, row in pairs(workspace["Glass Bridge"]["GlassPane"]:GetChildren()) do
+			if row:IsA("Folder") then
+				for _, glass in pairs(row:GetChildren()) do
+					local p = Instance.new("Part")
+					p.Anchored = true
+					p.CanCollide = true
+					p.Size = glass.Size + Vector3.new(.5,.8,.5)
+					p.Position = glass.Position
+					p.Name = "Hello"
+					p.Parent = workspace
+
+					glass.ChildAdded:Connect(function()
+						p.Color = Color3.fromRGB(255,0,0)
+					end)
+
+					if not glass:FindFirstChild("TouchInterest") then
+						p.Color = Color3.fromRGB(0,255,0)
+					else
+						p.Color = Color3.fromRGB(255,0,0)
+					end
+				end
+			end
+		end
+	else 
+		for _, Object in pairs(workspace:GetChildren()) do
+			if Object.Name == "Hello" then
+				Object:Destroy()
+			end
+		end
+	end 
 end)
 section1:addButton("To start", function()
-    print("Clicked")
-    local char = game.Players.LocalPlayer.Character
-    if char then 
-        local hrp = char:WaitForChild("HumanoidRootPart")
-        hrp.CFrame = CFrame.new(17.3938, 65.9357, 115.14)
-    end
-    end)
+	print("Clicked")
+	local char = game.Players.LocalPlayer.Character
+	if char then 
+		local hrp = char:WaitForChild("HumanoidRootPart")
+		hrp.CFrame = CFrame.new(17.3938, 65.9357, 115.14)
+	end
+end)
 section1:addButton("To end", function()
-    print("Clicked")
-    local char = game.Players.LocalPlayer.Character
-    if char then 
-        local hrp = char:WaitForChild("HumanoidRootPart")
-        hrp.CFrame = CFrame.new(1096.52, 61, 115.341)
-    end
-    end)
+	print("Clicked")
+	local char = game.Players.LocalPlayer.Character
+	if char then 
+		local hrp = char:WaitForChild("HumanoidRootPart")
+		hrp.CFrame = CFrame.new(1096.52, 61, 115.341)
+	end
+end)
 section1:addSlider("Walk Speed", 16, 0, 200, function(value)
-    print("Dragged", value)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-    end)
+	print("Dragged", value)
+	game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+end)
 section1:addSlider("Jump Height", 50, 0, 200, function(value)
-    print("Dragged", value)
-    game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
-    end)
+	print("Dragged", value)
+	game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+end)
+
+
+local startPosition = Vector3.new(0,0,0)
+
+local glassPanes = {}
+local sortedPanes = {}
+local letters = {}
+local Path = ""
+local letterAmount = 0
+
+local function sortTable()
+	table.sort(sortedPanes, function(a,b)
+		return a.value < b.value
+	end)
+end
+
+local function createArray()
+	for k, v in pairs(glassPanes) do
+		sortedPanes[#sortedPanes + 1] = {key = k, value = v}
+	end
+end
+
+local function createString()
+	for _, l in ipairs(letters) do
+		Path = Path..l
+	end
+end
+
+local function determineSide(index, row)
+	local work
+	if row:FindFirstChild("1"):FindFirstChild("TouchInterest") then	
+		letterAmount += 1
+		work = true
+		letters[index] = "R"
+	elseif row:FindFirstChild("2"):FindFirstChild("TouchInterest") then
+		letterAmount += 1
+		work = true
+		letters[index] = "L"
+	end
+
+	if work == nil then
+		-- Someone just died on plane
+		local connections = {
+			connection1 = nil,
+			connection2 = nil
+		}
+
+
+		for _, glass in pairs(row:GetChildren()) do
+			connections["connection"..glass.Name] = glass.ChildAdded:Connect(function(child)
+				if glass.Name == "1" then
+					letterAmount += 1
+					letters[index] = "R"
+				else
+					letterAmount += 1
+					letters[index] = "L"
+				end
+
+
+				for _, connection in pairs(connections) do
+					connection:Disconnect()
+					connection = nil
+				end
+			end)
+		end
+	end
+end
+
+for _, row in pairs(workspace["Glass Bridge"]["GlassPane"]:GetChildren()) do
+	if row:IsA("Folder") then
+		local Num1 = row:FindFirstChild("1").Position
+		local Distance = (Num1 - startPosition).magnitude
+		glassPanes[row] = Distance
+	end
+end
+
+createArray()
+sortTable()
+
+local counter = 0
+for i, v in ipairs(sortedPanes) do
+	counter += 1
+	determineSide(counter, v["key"])
+end
+
+local runConnection
+runConnection = game:GetService("RunService").Stepped:Connect(function()
+	if letterAmount == #sortedPanes then
+		createString()
+		runConnection:Disconnect()
+		runConnection = nil
+	end
+end)
+
+section1:addButton("Copy Path To Clipboard", function()
+	setclipboard(Path)
+end)
 section2:addButton("Rejoin", function()
-    print("Clicked")
-    local ts = game:GetService("TeleportService")
-    local p = game:GetService("Players").LocalPlayer
-    ts:Teleport(game.PlaceId, p)
-    local queue_on_teleport =
-    queue_on_teleport or
-        syn and
-            syn.queue_on_teleport [[
+	print("Clicked")
+	local ts = game:GetService("TeleportService")
+	local p = game:GetService("Players").LocalPlayer
+	ts:Teleport(game.PlaceId, p)
+	local queue_on_teleport =
+		queue_on_teleport or
+		syn and
+		syn.queue_on_teleport [[
             repeat wait() until game:IsLoaded() wait(5) print("ServerHoped or rejoined")
             loadstring(game:HttpGet('https://raw.githubusercontent.com/Laggyr/TWS-HUB/main/MainScript'))()]]
-    end)
-section2:addButton("Infinity Yield", function()
-    print("Clicked")
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-    end)
-section2:addKeybind("Toggle Keybind", Enum.KeyCode.RightControl, function()
-print("Activated Keybind")
-venyx:toggle()
-end, function()
-print("Changed Keybind")
 end)
+section2:addButton("Infinity Yield", function()
+	print("Clicked")
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+local test = section2:addKeybind("Toggle Keybind", Enum.KeyCode.RightControl, function()
+	print("Activated Keybind")
+	venyx:toggle()
+end, function()
+	print("Changed Keybind")
+end)
+section2:addButton("Destroy", function()
+	if game.CoreGui:FindFirstChild("Impossible Glass Bridge Cheat") then 
+		for bind, func in pairs(section2.binds) do
+			func.connection:UnBind()
+		end
+		venyx.container:Destroy()
+	end     
+end)
+section2:addButton("Test",function()
+	for bind, func in pairs(section2.binds) do
+		func:UnBind()
+	end
+end)
+print(test)
 -- second page
+local miscellaneous = venyx:addPage("Misc ", 5012544693)
+local miscSection = miscellaneous:addSection("SongSinger")
+
+local songToggle = false
+local songButton 
+songButton = miscSection:addToggle("Sing Toggle, 'Workspace/song.txt'", nil, function(value)
+	print("Toggled", value)
+	songToggle = value
+	if value == true then
+		local stringContainer = ""
+		local counter = 0
+		local linesToBeRead = 1 
+		local waitar = 4
+
+		for _,v in next, readfile('song.txt'):split('\n') do
+			if songToggle == false then 
+				break
+			end 
+			counter = counter + 1
+			if counter <= linesToBeRead then
+				stringContainer = stringContainer.." "..string.gsub(v, "\r", "").."."
+				if counter == linesToBeRead then 
+					stringContainer = string.gsub(stringContainer, "\r", "")
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(stringContainer, 'All')
+					Wait(waitar)
+					counter = 0
+					stringContainer = ""
+				end
+			else 
+				counter = 0
+				stringContainer = ""
+			end 
+		end     
+		if songToggle == true then 
+			miscSection:updateToggle(songButton, "Sing Toggle, 'Workspace/song.txt'", false)
+			if counter <= linesToBeRead and counter > 0 then 
+				stringContainer = string.gsub(stringContainer, "\r", "")
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(stringContainer, 'All')
+			end 
+		end 
+	end 
+end)
+
+-- third page
 local theme = venyx:addPage("Theme", 5012544693)
 local colors = theme:addSection("Colors")
 
 for theme, color in pairs(themes) do -- all in one theme changer, i know, im cool
-colors:addColorPicker(theme, color, function(color3)
-venyx:setTheme(theme, color3)
-end)
+	colors:addColorPicker(theme, color, function(color3)
+		venyx:setTheme(theme, color3)
+	end)
 end
+
+game.CoreGui.ChildAdded:Connect(function(child)
+	if child.Name == "Impossible Glass Bridge Cheat" then
+		for bind, func in pairs(section2.binds) do
+			func.connection:UnBind()
+		end
+		venyx.container:Destroy()
+	end
+end)
 
 -- load
 venyx:SelectPage(venyx.pages[1], true)
