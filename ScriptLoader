@@ -1,1 +1,31 @@
-print("bob")
+local gameId = game.PlaceId
+local LCount = 0
+local LSpeed = 0.5
+
+function LoaderAnim()
+    while LCount <= 2 do 
+        wait(LSpeed) 
+        LCount = LCount+1
+        print("Loading,,")
+    end
+    if LCount == 3 then 
+        wait(LSpeed)
+        print("Script Loaded")
+    end
+end
+if gameId == 7952502098 then 
+    print("Found Supported Game",gameId)
+    LoaderAnim()
+    wait(LSpeed)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Laggyr/TWS-HUB/main/Scripts/Impossible_Glass_Bridge_Obby",true))()
+elseif gameId == 4809447488 then
+    print("Found Supported Game",gameId)
+    LoaderAnim()
+    wait(LSpeed)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Laggyr/TWS-HUB/main/Scripts/Venture_Tale",true))()
+else
+    print("No Supported Game Found",gameId)
+end 
+
+
+
