@@ -1,0 +1,226 @@
+-- init
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
+local venyx = library.new("Venture Tale", 5013109572)
+
+writefile("song.txt","lyrics..")
+
+-- themes
+local themes = {
+	Background = Color3.fromRGB(24, 24, 24),
+	Glow = Color3.fromRGB(0, 0, 0),
+	Accent = Color3.fromRGB(10, 10, 10),
+	LightContrast = Color3.fromRGB(20, 20, 20),
+	DarkContrast = Color3.fromRGB(14, 14, 14),  
+	TextColor = Color3.fromRGB(255, 255, 255)
+}
+
+-- first page
+local page = venyx:addPage("Features", 5012544693)
+local section1 = page:addSection("Main")
+local section2 = page:addSection("Settings")
+
+section1:addToggle("TestSlider", nil, function(value)
+	print("Toggled", value)
+end)
+section1:addButton("Stuck Fix (Moves/Reset When Stuck)", function()
+	print("Clicked Stuck Fix")
+    print("AntiNotMove Has been run")
+    local player = game:GetService("Players").LocalPlayer
+    local runService = game:GetService("RunService")
+
+    local cooldownTime = 2
+    local maxMovement = 8
+    local minMovement = 4
+    local threshold = .2
+
+    local respawnThreshold = 60
+    local respawnTime = 120
+
+    respawnThreshold /= 2
+
+    if maxMovement < minMovement then
+        local currentMov = minMovement
+        minMovement = maxMovement
+        minMovement = currentMov
+    end
+
+    local lastCheckedAFK = tick()
+    local lastCheckedAFKPosition;
+
+    local respawnTick = tick()
+    local respawnPosition;
+
+    local move = false
+
+    runService.RenderStepped:Connect(function()
+        local char = player.Character
+        if (char) then
+            local HRP = char:WaitForChild("HumanoidRootPart")
+            local humanoid = char:WaitForChild("Humanoid")
+            
+            if lastCheckedAFKPosition == nil then
+                lastCheckedAFKPosition = HRP.Position
+            end
+            
+            if (respawnPosition == nil) then
+                respawnPosition = HRP.Position
+            end
+            
+            local currentPos = HRP.Position
+            local newTick = tick()
+            
+            if newTick - lastCheckedAFK > cooldownTime then
+                if (math.abs((lastCheckedAFKPosition.X - currentPos.X)) < threshold and math.abs((lastCheckedAFKPosition.Y - currentPos.Y)) < threshold and math.abs((lastCheckedAFKPosition.Z - currentPos.Z)) < threshold) then
+                    move = true
+                end
+                lastCheckedAFK = tick()
+                lastCheckedAFKPosition = HRP.Position
+            end
+            
+            if newTick - respawnTick > respawnTime then
+                if (math.abs((respawnPosition.X - currentPos.X)) < respawnThreshold and math.abs((respawnPosition.Z - currentPos.Z)) < respawnThreshold and math.abs((respawnPosition.Z - currentPos.Z)) < respawnThreshold) then
+                    humanoid.Health = 0
+                    print("Reset You")
+                end
+                
+                respawnPosition = HRP.Position
+                respawnTick = tick()
+            end
+            
+            local integer;
+            
+            if math.random(1,2) == 1 then
+                integer = 1
+            else
+                integer = -1
+            end
+            
+            if (move) then
+                local randomPosition = Vector3.new(math.random(minMovement, maxMovement) * integer, 0, math.random(minMovement, maxMovement) * integer)
+                lastCheckedAFK = tick()			
+                humanoid.Jump = true
+                humanoid:MoveTo(HRP.Position + randomPosition)
+                print("Moved You ->", randomPosition)
+                
+                move = false
+            end		
+        end
+    end)
+end)
+section1:addButton("Anti Idle", function()
+	print("Clicked Anti Idle")
+    local vu = game:GetService("VirtualUser")
+    game:GetService("Players").LocalPlayer.Idled:connect(function()
+        vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        wait(1)
+    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+    end)
+end)
+section1:addButton("Open AutoFarm UI", function()
+	print("Clicked AutoFarm")
+    _G.safemode = true 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/saucekid/scripts/main/Venture%20Tale/ventureAI.lua"))()
+end)
+section2:addButton("Rejoin", function()
+	print("Clicked")
+	local ts = game:GetService("TeleportService")
+	local p = game:GetService("Players").LocalPlayer
+	ts:Teleport(game.PlaceId, p)
+	local queue_on_teleport =
+		queue_on_teleport or
+		syn and
+		syn.queue_on_teleport [[
+            repeat wait() until game:IsLoaded() wait(5) print("ServerHoped or rejoined")
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/Laggyr/TWS-HUB/main/ScriptLoader'))()]]
+end)
+section2:addButton("Infinity Yield", function()
+	print("Clicked")
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+local test = section2:addKeybind("Toggle Keybind", Enum.KeyCode.RightControl, function()
+	print("Activated Keybind")
+	venyx:toggle()
+end, function()
+	print("Changed Keybind")
+end)
+section2:addButton("Destroy", function()
+	if game.CoreGui:FindFirstChild("Venture Tale") then 
+		for bind, func in pairs(section2.binds) do
+			func.connection:UnBind()
+		end
+		venyx.container:Destroy()
+	end     
+end)
+-- second page
+local miscellaneous = venyx:addPage("Misc ", 5012544693)
+local miscSection = miscellaneous:addSection("Song Singer")
+
+local songToggle = false
+local songButton 
+songButton = miscSection:addToggle("Sing Toggle, 'Workspace/song.txt'", nil, function(value)
+	print("Toggled", value)
+	songToggle = value
+	if value == true then
+		local stringContainer = ""
+		local counter = 0
+		local linesToBeRead = 1 
+		local waitar = 4
+
+		for _,v in next, readfile('song.txt'):split('\n') do
+			if songToggle == false then 
+				break
+			end 
+			counter = counter + 1
+			if counter <= linesToBeRead then
+				stringContainer = stringContainer.." "..string.gsub(v, "\r", "").."."
+				if counter == linesToBeRead then 
+					stringContainer = string.gsub(stringContainer, "\r", "")
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(stringContainer, 'All')
+					Wait(waitar)
+					counter = 0
+					stringContainer = ""
+				end
+			else 
+				counter = 0
+				stringContainer = ""
+			end 
+		end     
+		if songToggle == true then 
+			miscSection:updateToggle(songButton, "Sing Toggle, 'Workspace/song.txt'", false)
+			if counter <= linesToBeRead and counter > 0 then 
+				stringContainer = string.gsub(stringContainer, "\r", "")
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(stringContainer, 'All')
+			end 
+		end 
+	end 
+end)
+-- third page
+local usefulScripts = venyx:addPage("Scripts ", 5012544693)
+local scriptsSection = usefulScripts:addSection("Useful Scripts")
+scriptsSection:addButton("Infinity Yield", function()
+	print("Clicked")
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+
+-- Forth page
+
+local theme = venyx:addPage("Theme", 5012544693)
+local colors = theme:addSection("Colors")
+
+for theme, color in pairs(themes) do 
+	colors:addColorPicker(theme, color, function(color3)
+		venyx:setTheme(theme, color3)
+	end)
+end
+
+game.CoreGui.ChildAdded:Connect(function(child)
+	if child.Name == "Venture Tale" then
+		for bind, func in pairs(section2.binds) do
+			func.connection:UnBind()
+		end
+		venyx.container:Destroy()
+	end
+end)
+
+-- load
+venyx:SelectPage(venyx.pages[1], true)
